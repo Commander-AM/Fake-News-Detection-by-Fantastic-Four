@@ -11,7 +11,15 @@ import java.util.*
 
 /** Load TfLite model and provide predictions with task api.  */
 class TextClassificationClient(private val context: Context) {
+    /**
+     * Stores classfier
+     */
     var classifier: BertNLClassifier? = null
+
+    /**
+     * loads classifier from tflite file
+     * @throws IOException if classifier not found
+     */
     fun load() {
         try {
             classifier = BertNLClassifier.createFromFile(context, MODEL_PATH)
@@ -20,11 +28,19 @@ class TextClassificationClient(private val context: Context) {
         }
     }
 
+    /**
+     * unloads classifier if it exists
+     */
     fun unload() {
         classifier?.close()
         classifier = null
     }
 
+    /**
+     * classifies given text
+     * @param text is a string to be classified
+     * @return results which is a sorted list of Result objects
+     */
     fun classify(text: String?): List<Result> {
         val apiResults = classifier!!.classify(text)
         val results: MutableList<Result> = ArrayList<Result>(apiResults.size)
